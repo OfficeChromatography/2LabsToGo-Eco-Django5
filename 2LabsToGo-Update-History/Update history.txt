@@ -1,0 +1,58 @@
+Update history
+
+Date: 05-10-2025
+Done: General software update
+Concerned: many files
+
+Date: 06-03-2025
+Done: Update for humidity-control
+Concerned: 
+2LabsToGo-Eco-Hardware/3D-parts (openSCAD, STL), 
+2LabsToGo-Eco-Hardware/Materials-Lists (Bill of Materials_humidity-control, additional baskets),
+2LabsToGo-Eco-Firmware (Marlin, firmware hex file)
+
+Date: 07-25-2025
+Done: Sample tables updated (application pattern changes without erasing the sample table)
+Concerned:
+2LabsToGo-Eco-Software/app/templates/js/oclab/sample.js
+2LabsToGo-Eco-Software/app/templates/js/oclab/samplesp.js
+2LabsToGo-Eco-Software/app/templates/modules/loadlist/loadlist.js
+2LabsToGo-Eco-Software/app/templates/modules/sampleapp/table/table.js
+2LabsToGo-Eco-Software/app/templates/modules/sampleappsp/tablesp/tablesp.js
+
+Date: 08-22-2025
+Done: Method Finecontrol/Dispensing valve corrected
+Concerned:
+2LabsToGo-Eco-Software/app/templates/modules/dispensevalve/dispensevalve.js
+
+Date: 09-08-2025
+Done: Electronic box modified for humidity Control; two-parted frame added to support the old model
+Concerned:
+2LabsToGo-Eco-Hardware/3D-Parts/Autodesk Fusion/electronic box.3fd
+2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box.stl
+2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box_frame-part1.stl
+2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box_frame-part2.stl
+
+Date: 09-20-2025
+Done: README in main updated
+Done: Instruction Visual Studio Code corrected
+
+Date: 09-22-205
+Done: Humidity Control updated (Firmware and Software), now allowing both drying and humidifying the 2LabsToGo-Eco before development.
+Concerned:
+2LabsToGo-Eco-Firmware (Marlin; firmware_2LabsToGo-Eco.hex)
+2LabsToGo-Eco-Software/app/templates/modules/humiditycontrol/humiditycontrol.html
+2LabsToGo-Eco-Software/app/templates/modules/humiditycontrol/humiditycontrol.js
+
+Date: 10-13-2025
+Done: README in main updated
+Concerned: Raspberry Pi operating system "bullseye" 
+
+Date: 11-18-2025
+Done: Some files have been cleaned up.
+Concerned: migrations, update is not required
+
+Date: 12-02-2025
+Done:  Java scripts updated, now better working
+Concerned: drypump.js, dispensvalve.js, wayvalve.js 
+
