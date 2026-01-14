@@ -2,6 +2,8 @@
 
 ## 2LabsToGo-Eco combines an analytical (high-performance thin-layer chromatography) and a biological (bioassays) laboratory.
 
+## This repo is just for testing!!
+
 <u>References:</u>  
 M.C.O. Romero, K. Jakob, J. Schmidt, T. Nimmerfroh, W. Schwack, G.E.
  Morlock, Consolidating two laboratories into the most sustainable lab of the future: 2LabsToGo-Eco,
