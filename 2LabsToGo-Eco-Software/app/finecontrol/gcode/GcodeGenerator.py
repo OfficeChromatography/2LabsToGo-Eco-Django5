@@ -4,6 +4,7 @@ from finecontrol.gcode.zero_pos import *
 
 #INIT_POINT_X = 20
 #INIT_POINT_Y = 3.5
+#This was tansferred to zero_pos.py
 
 class GcodeGenerator:
     # set these values according to each machine!!!
