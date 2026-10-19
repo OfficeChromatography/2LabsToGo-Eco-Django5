@@ -8,11 +8,10 @@ RUN apt update && apt install -y curl --no-install-recommends
 RUN echo "deb [signed-by=/etc/apt/keyrings/raspberrypi.gpg] http://archive.raspberrypi.org/debian/ trixie main" | tee /etc/apt/sources.list.d/raspberrypi.list
 RUN curl -sSL https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | gpg --dearmor -o /etc/apt/keyrings/raspberrypi.gpg
 RUN apt update && apt install -y python3-picamera2 --no-install-recommends
+
 # Install pip dependencies
 COPY requirements/base.txt /base_requirements4.txt
-#COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /base_requirements4.txt
-#RUN pip install --no-cache-dir -r /requirements.txt
 
 ENV PYTHONUNBUFFERED=1
 
