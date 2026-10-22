@@ -5,7 +5,7 @@ $('#cleanbttn').on('click', function (e) {
   sendToMachine('M203Z5')  
   sendToMachine('M42P49S255')
   sendToMachine('M42P36S255')
-  sendToMachine('G0X1');
+  sendToMachine('G0X129');
   event.preventDefault()
   $formData = 'PROCESS&'+$('#cleaningprocessform').serialize()
   $endpoint = window.location.origin+'/cleanprocess/'

@@ -164,20 +164,30 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     });
 });
+document.getElementById('right').addEventListener('click', function() {
+    confirmSave();
+    navigate('next');
+});
 
-// Even Listener for right and left arrows 
-document.getElementById( 'right' ).addEventListener('click', function() { 
-	confirmSave();
-	uploadedImage.src = originalImageSrc;
-	isNavigating = false;
-	navigate( 'next' );
+document.getElementById('left').addEventListener('click', function() {
+    confirmSave();
+    navigate('pre');
 });
-document.getElementById( 'left' ).addEventListener('click', function() { 
-	confirmSave();
-	uploadedImage.src = originalImageSrc;
-	isNavigating = false;
-	navigate( 'pre' );
-});
+
+// // Even Listener for right and left arrows 
+// document.getElementById( 'right' ).addEventListener('click', function() { 
+// 	confirmSave();
+// 	uploadedImage.src = originalImageSrc;
+// 	isNavigating = false;
+// 	navigate( 'next' );
+// });
+// document.getElementById( 'left' ).addEventListener('click', function() { 
+// 	console.log("LINKS")
+// 	confirmSave();
+// 	uploadedImage.src = originalImageSrc;
+// 	isNavigating = false;
+// 	navigate( 'pre' );
+// });
 
 
 function Image_Upload( event ){
@@ -329,38 +339,146 @@ function Foreground_pixels_mean_RGB( pixelData ){
 	
 }
 		
-function navigate( direction ) {
-		isNavigating = 0;
-	    $.ajax({
-		url: '/imageProcess/',
-		type: 'POST',
-		data: {
-		    direction: direction,
-		    current_photo_id: photoName
-		},
+// function navigate( direction ) {
+// 		isNavigating = 0;
+// 	    $.ajax({
+// 		url: '/imageProcess/',
+// 		type: 'POST',
+// 		data: {
+// 		    direction: direction,
+// 		    current_photo_id: photoName
+// 		},
 		
-		dataType: 'json',
+// 		dataType: 'json',
 		
-		success: function( response ) {
-		    console.log(response.imagepath)
-		    $('#uploaded-image').attr('src', response.imagepath);
-		    uploadedImage.onload = function(){
-				if (isNavigating < 2){
-					isInitialRGBCalculated = false;
-					ResetInitialSettings();
-					Get_Initial_values(document.getElementById('uploaded-image'));
-					isNavigating = isNavigating + 1;
-				}
+// 		success: function( response ) {
+// 		    console.log(response.imagepath)
+// 		    $('#uploaded-image').attr('src', response.imagepath);
+// 		    uploadedImage.onload = function(){
+// 				if (isNavigating < 2){
+// 					isInitialRGBCalculated = false;
+// 					ResetInitialSettings();
+// 					Get_Initial_values(document.getElementById('uploaded-image'));
+// 					isNavigating = isNavigating + 1;
+// 				}
 				
-			}
-		},  
-		error: function(xhr, status, error){
-		    console.error(error);
-		}
-	    });
+// 			}
+// 		},  
+// 		error: function(xhr, status, error){
+// 		    console.error(error);
+// 		}
+// 	    });
+// }
+
+function navigate(direction) {
+
+    isNavigating = 0;
+
+    console.log("Current ID enviado:", currentPhotoId);
+
+    $.ajax({
+        url: '/imageProcess/',
+        type: 'POST',
+
+        data: {
+            direction: direction,
+            current_photo_id: currentPhotoId
+        },
+
+        dataType: 'json',
+
+        success: function(response) {
+
+            console.log("Nueva imagen:", response.imagepath);
+            console.log("Nuevo ID:", response.photo_id);
+
+            currentPhotoId = response.photo_id;
+
+            uploadedImage.onload = function() {
+
+                if (isNavigating < 2) {
+                    isInitialRGBCalculated = false;
+                    ResetInitialSettings();
+                    Get_Initial_values(uploadedImage);
+                    isNavigating++;
+                }
+            };
+
+            uploadedImage.src = response.imagepath;
+
+            // Actualizamos también la referencia
+            originalImageSrc = response.imagepath;
+        },
+
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
 }
+// function navigate(direction) {
 
+//     isNavigating = 0;
 
+//     console.log("ID actual:", photoName);
+
+//     $.ajax({
+//         url: '/imageProcess/',
+//         type: 'POST',
+
+//         data: {
+//             direction: direction,
+//             current_photo_id: currentPhotoId//photoName
+//         },
+
+//         dataType: 'json',
+// 		success: function(response) {
+
+// 			currentPhotoId = response.photo_id;
+
+// 			uploadedImage.onload = function() {
+// 				if (isNavigating < 2) {
+// 					isInitialRGBCalculated = false;
+// 					ResetInitialSettings();
+// 					Get_Initial_values(uploadedImage);
+// 					isNavigating++;
+// 				}
+// 			};
+
+// 			uploadedImage.src = response.imagepath;
+// 			originalImageSrc = response.imagepath;
+// 		}
+//         // success: function(response) {
+
+//         //     console.log("Nueva imagen:", response.imagepath);
+//         //     console.log("Nuevo ID:", response.photo_id);
+
+//         //     // Actualizamos la imagen actual
+//         //     photoName = response.photo_id;
+
+//         //     uploadedImage.onload = function() {
+
+//         //         if (isNavigating < 2) {
+
+//         //             isInitialRGBCalculated = false;
+
+//         //             ResetInitialSettings();
+
+//         //             Get_Initial_values(uploadedImage);
+
+//         //             isNavigating++;
+//         //         }
+//         //     };
+
+//         //     uploadedImage.src = response.imagepath;
+
+//         //     originalImageSrc = response.imagepath;
+//         // },
+
+//         // error: function(xhr, status, error) {
+//         //     console.error(xhr.responseText);
+//         // }
+//     });
+// }
 
 //~ function White_balance(){
 	//~ const{canvas, context} = CreateCanvas();

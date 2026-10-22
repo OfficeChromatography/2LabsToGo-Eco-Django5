@@ -16,6 +16,12 @@
         <button title='Next Image' id="right" name="right_arrow" class="btn btn-link image-right"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
         <button title='Previous Image' id="left" name="left_arrow" class="btn btn-link image-left"><i class="fas fa-arrow-left" aria-hidden="true"></i></button>
     </div>
+	<div class="card-header py-3">
+        <div class="d-flex flex-row justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Save and Load</h6>
+            <button title='Minimize the Window' id='minimize-saveandload' class="btn btn-link" data-toggle="collapse" data-target="#saveandloadarea" aria-expanded="true" aria-controls="collapseOne"><i class="far fa-window-minimize"></i></button>
+        </div>
+    </div>
     <div class="card-body d-flex flex-column">
         {% include 'modules/loadlist/loadlist.html' %}
         <!-- <br>

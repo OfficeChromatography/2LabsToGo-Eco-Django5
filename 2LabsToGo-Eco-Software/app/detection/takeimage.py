@@ -129,6 +129,7 @@ class PhotoShootManager:
         self.camera.set_camera_control('auto_exposure', ae_value)
         time.sleep(0.5)
         if ae_value == 0:
+            print("Autoexposure OFF")
 
             try:
                 self.camera.picam2.stop()
@@ -161,10 +162,11 @@ class PhotoShootManager:
 
             self.camera.picam2.set_controls({"AeEnable": True})
             time.sleep(1.5) 
-            for i in range(2):
+            for i in range(1):
                 try:
                     metadata = self.camera.picam2.capture_metadata()
-                    print(f"Metadata AE #{i+1}: Exposure={metadata.get('ExposureTime')}, Gain={metadata.get('AnalogueGain')}")
+                    print("Autoexposure ON")
+                    #print(f"Metadata AE #{i+1}: Exposure={metadata.get('ExposureTime')}, Gain={metadata.get('AnalogueGain')}")
                 except Exception as e:
                     print(f"❌ Error AE #{i+1}: {e}")
                 time.sleep(0.4)
@@ -264,7 +266,7 @@ class FixDistortionImage:
         self.correction_dist = np.array([[-0.4778321949564693, 0.2886513041769561, 0.0016895448886501186,
                                           0.0047619737564622905, -0.12895314122999252]])
 
-        self.rotation_angle = 179.8
+        self.rotation_angle = 180.3
 
         # Undistort the image
         if self.img is not None:
@@ -289,9 +291,9 @@ class FixDistortionImage:
                             newcameramtx)
         # crop the image
         #x, y, w, h = roi
-        y=150+10   #cropping 5 pixel, about 1 mm
+        y=150+10+10   #cropping 5 pixel, about 1 mm
         h=1150
-        x=440-10   #cropping 5 pixel, about 1 mm
+        x=440-10-10   #cropping 5 pixel, about 1 mm
         w=1150
         dst = dst[y:y + h, x:x + w]
         self.path_photo = f'{os.path.splitext(self.path_photo)[0]}_{os.path.splitext(self.path_photo)[1]}'

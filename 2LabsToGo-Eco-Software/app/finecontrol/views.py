@@ -19,6 +19,7 @@ from django.forms.models import model_to_dict
 
 from sampleapp.models import *
 from development.models import *
+from django.apps import apps
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -37,53 +38,64 @@ form = {}
 
 
 class MethodList(FormView):
-
     def get(self, request):
         """Returns a list with all the Methods saved in DB"""
-        method = Method_Db.objects.filter(auth_id=request.user).order_by('-id')
+        Method_Db = apps.get_model("finecontrol", "Method_Db")
+        SampleApplication_Db = apps.get_model("sampleapp", "SampleApplication_Db")
+        Development_Db = apps.get_model("development", "Development_Db")
+        BandsComponents_Db = apps.get_model("sampleapp", "BandsComponents_Db")
+        orderby = request.GET.get("orderby", "updated_at")
+        allowed = {
+            "updated_at": "-updated_at",
+            "created_at": "-created_at",
+        }
+        order_field = allowed.get(orderby, "-updated_at")
+        methods = Method_Db.objects.filter(auth=request.user).order_by(order_field)
         data_saved = []
-        for i in method:
+        for m in methods:
             icons = [1, 1, 1, 1]
-            if not SampleApplication_Db.objects.filter(method=i):
+            if not SampleApplication_Db.objects.filter(method=m).exists():
                 icons[0] = 0.3
-                
-            if not Development_Db.objects.filter(method=i):
+            if not Development_Db.objects.filter(method=m).exists():
                 icons[1] = 0.3
-                
-            band_c = BandsComponents_Db.objects.filter(sample_application__method=i)
-            
+            band_c = BandsComponents_Db.objects.filter(sample_application__method=m)
             if band_c.exists():
                 for obj in band_c:
                     if obj.sample is None:
-                        icons[3] = 0 # [1,0.3,1,0]
-               
-            data_saved.append([i.filename, i.id, icons])
-
+                        icons[3] = 0
+            data_saved.append([m.filename, m.id, icons])
         return JsonResponse(data_saved, safe=False)
 
 class MethodListSP(FormView):
-
     def get(self, request):
         """Returns a list with all the Methods saved in DB"""
-        method = Method_Db.objects.filter(auth_id=request.user).order_by('-id')
+        Method_Db = apps.get_model("finecontrol", "Method_Db")
+        SampleApplication_Db = apps.get_model("sampleapp", "SampleApplication_Db")
+        Development_Db = apps.get_model("development", "Development_Db")
+        BandsComponents_Db = apps.get_model("sampleapp", "BandsComponents_Db")
+        orderby = request.GET.get("orderby", "updated_at")
+        allowed = {
+            "updated_at": "-updated_at",
+            "created_at": "-created_at",
+        }
+        order_field = allowed.get(orderby, "-updated_at")
+        #print("orderby:", orderby)
+        #print("order_field:", order_field)
+        methods = Method_Db.objects.filter(auth=request.user).order_by(order_field)
         data_saved = []
-        for i in method:
+        for m in methods:
             icons = [1, 1, 1, 1]
-            if not SampleApplication_Db.objects.filter(method=i):
+            if not SampleApplication_Db.objects.filter(method=m).exists():
                 icons[0] = 0.3
-                
-            if not Development_Db.objects.filter(method=i):
+            if not Development_Db.objects.filter(method=m).exists():
                 icons[1] = 0.3
-            band_c = BandsComponents_Db.objects.filter(sample_application__method=i)
-            
+            band_c = BandsComponents_Db.objects.filter(sample_application__method=m)
             if band_c.exists():
                 for obj in band_c:
                     if obj.sample is None:
-                        icons[3] = 0 # [1,0.3,1,0]
-            
-            data_saved.append([i.filename, i.id, icons])
+                        icons[3] = 0  # [1, 0.3, 1, 0]
+            data_saved.append([m.filename, m.id, icons])
         return JsonResponse(data_saved, safe=False)
-
 
 class MethodDelete(DeleteView):
 
@@ -124,7 +136,6 @@ class SyringeLoad(View):
             return JsonResponse(volumes, safe=False)
 
     def post(self, request):
-        # Creates a new vol in the database
         if 'SAVEMOVEMOTOR' in request.POST:
             try:
                 SyringeLoad_Db.objects.filter(
@@ -541,38 +552,10 @@ class GcodeEditor(View):
 class DryPump(View):
     def get(self,request):
         return render(request, "./drypump.html", form)
-
-class DryPumpControl(View):
-    def post(self, request):
-        
-        generate = GcodeGenerator(True)
-        active = request.POST.get('active')
-        if (active =='On'):
-            generate.drypump(request.POST.get('times'))
-        elif (active =='Off'):
-            OC_LAB.send('Test')
-        OC_LAB.print_from_list
-        return JsonResponse({'message': 'ok'})
-    def get (self, request):
-        return JsonResponse({'message': 'ok'})
-        
+       
 class WayValve(View):
     def get(self,request):
         return render(request, "./wayvalve.html", form)
-
-#class WayValveControl(View):
-#    def post(self, request):
-#        
-#        generate = GcodeGenerator(True)
-#        active = request.POST.get('active')
-#        if (active =='On'):
-#            generate.wayvalve(request.POST.get('times'))
-#        elif (active =='Off'):
-#            OC_LAB.send('Test')
-#        OC_LAB.print_from_list
-#        return JsonResponse({'message': 'ok'})
-#    def get (self, request):
-#        return JsonResponse({'message': 'ok'})
 
 class DispValve(View):
     def get(self,request):
@@ -583,7 +566,6 @@ class Temperature(View):
     def get(self, request):
         OC_LAB.send('M42I1P23S0')
         return render(request, "./temperature.html", form)
-
 
 class TempControl(View):
     def post(self, request):

@@ -34,7 +34,7 @@ class MovementSettings_Form(forms.ModelForm):
 class PressureSettings_Form(forms.ModelForm):
     class Meta:
         model = PressureSettings_Db
-        fields = ['pressure','frequency', 'temperature','nozzlediameter', "rinsingPeriod", 'rinsingSolvent']
+        fields = ['pressure','frequency', 'temperature','nozzlediameter', "rinsingPeriod", 'rinsingSolvent', 'rinsingFactor', 'vialtype']
 
     def clean_temperature(self):
         temperature = self.cleaned_data["temperature"]
@@ -51,7 +51,7 @@ class PressureSettings_Form(forms.ModelForm):
 class BandsComponents_Form(forms.ModelForm):
     class Meta:
         model = BandsComponents_Db
-        fields = ['band_number','product_name', 'volume', 'type', 'sample', 'density', 'viscosity'] #'company','region','year',
+        fields = ['band_number','product_name', 'volume', 'type', 'sample', 'density', 'viscosity', 'sample_factor'] #'company','region','year',
         exclude = ['sample_application']
 
     def clean_band_number(self):
