@@ -15,6 +15,7 @@ class ApplicationControlAS{
             case "stopped":
                 $(".application-control").find(".btn").removeClass().addClass("btn btn-info")
             break;
+            
         }
     }
 
@@ -30,10 +31,18 @@ class ApplicationControlAS{
     $click_stop_button_handler(){
         let application_control = this
         $("#stop_bttn_as").on("click",function(){
-            application_control.$stop();
-            sendToMachine('M42P40S0\nG90\nG0E0\nM400\nG28Z\nG28YX\nM155S0\nM140S0');
-        });
+            application_control.$stop()
+            sendToMachine('M42P40S0')
+            sendToMachine('G90')
+            sendToMachine('G0E0')
+            sendToMachine('M400')
+            sendToMachine('G28Z')
+            sendToMachine('G28YX')
+            sendToMachine('M155S0')
+            sendToMachine('M140S0');
+        })
     }
+
 
     $start(){
         $.post(application_control.play_url,application_control.getData()).done(function(){
@@ -53,4 +62,6 @@ class ApplicationControlAS{
                 }
         )
     }
+    
+
 }

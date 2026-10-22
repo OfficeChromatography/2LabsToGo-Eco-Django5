@@ -1,9 +1,5 @@
 {% load static %}
 <form>
-    <div id="save_error_message"
-     style="display:none; margin-top:10px;"
-     class="alert alert-danger">
-    </div>
     <div class="input-group px-2">
         <div class="input-group-prepend">
             <button id='export_bttn' class="btn btn-outline-primary" type="button">Export</button>
@@ -15,13 +11,7 @@
             <button id='save_bttn' class="btn btn-outline-success" type="button">Save</button>
         </div>
         
-       <div class="input-group-append">
-            <button id="orderby_btn" class="btn btn-outline-primary" type="button">
-                Created 
-            </button>
-        </div>
-        </div>
-            
+    </div>
 </form>
     <div class="list-group p-3" id="list-load" role="tablist" style="max-height:300px; overflow-y:scroll;"></div>
     
@@ -34,4 +24,3 @@
 
     </div>
 <script src="{% static 'modules/loadlist/loadlist.js' %}"></script>
-

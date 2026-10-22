@@ -15,17 +15,18 @@ async function sendToMachine(value) {
                 reject(errorThrown);
             }
         });
-    })
+    });
 }
 
 async function openValve() {
     try {
-        gcode = 'G0X129\nM400\nM42P36S255\nM400\nG41\nM400\nG4S32\nM400\nM42P36S0\nM400\nG28X\nM400';
-        //after 30 s, the dispensing valve closes (firmware); after 32 s (G4S32), the 3-way valve switches back
-        await sendToMachine(gcode);
-        console.log(gcode);
-    } 
-    catch (error) {
+        await sendToMachine('G0X1');                  // Waste bottle
+        await sendToMachine('M400');
+        await sendToMachine('M42P36S255');            // Activate 3-way valve
+        await sendToMachine('G41');                   // Open dispensing valve
+        await sendToMachine('G4S30');                 // Wait 30 seconds
+        await sendToMachine('M42P36S0');              // Deactivate 3-way valve
+    } catch (error) {
         console.error('Error in openValve:', error);
     }
 }

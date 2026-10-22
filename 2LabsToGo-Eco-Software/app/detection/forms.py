@@ -271,7 +271,7 @@ class LedsControlsForm(forms.ModelForm):
                         'white',
                         ]
 
-        uv365_power = forms.DecimalField(label='340 nm',
+        uv365_power = forms.DecimalField(label='365 nm',
                                             required=False,
                                             max_digits=3,
                                             decimal_places=0,

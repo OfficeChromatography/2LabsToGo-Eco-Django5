@@ -33,7 +33,6 @@ var plotPreview = new Chart(ctx, {
                 ticks: {
                     min: 0, // minimum value
                     max: 100, // maximum value
-					reverse: true,
                 },
             }]
 

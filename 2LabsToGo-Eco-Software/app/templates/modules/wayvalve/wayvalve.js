@@ -1,5 +1,49 @@
+$("#valvecontrol").on('click', function(e) {
+    e.preventDefault();
+    console.log($("#wayvalveControlForm").serialize());
+    sendToValveControl();
+});
+
+function sendToValveControl() {
+    $.ajax({
+        method: 'POST',
+        url: window.location.origin + '/wayvalve/',
+        data: $("#wayvalveControlForm").serialize(),
+        success: function(data, textStatus, jqXHR) {
+            console.log("Success!");
+            controlValve();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+    });
+}
+
+async function controlValve() {
+    const cycles = parseInt($('#valveCycles').val(), 10);
+    for (let i = 0; i < cycles; i++) {
+        try {
+            await sendToMachine('M42P36S255'); // Ventil aktivieren
+            await sendToMachine('G4S1');     // 1 Sekunde warten
+            await sendToMachine('M42P36S0');   // Ventil deaktivieren
+            await sendToMachine('G4S1');     // 1 Sekunde warten
+        } catch (error) {
+            console.error('Error in controlValve:', error);
+        }
+    }
+}
+
+$('#valveRange').on('change', function() {
+    $('#valveCycles').val($(this).val());
+});
+
+$('#valveCycles').on('change', function() {
+    $('#valveRange').val($(this).val());
+});
+
+// Annahme: Diese Funktion wurde bereits in deinem Code definiert
 async function sendToMachine(value) {
-    const data = {'gcode': value};
+    var data = {'gcode': value};
     console.log(data);
     return new Promise(function(resolve, reject) {
         $.ajax({
@@ -11,40 +55,9 @@ async function sendToMachine(value) {
                 resolve(data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.error("Error:", errorThrown);
+                console.log(errorThrown);
                 reject(errorThrown);
             }
         });
-    })
+    });
 }
-
-$('#valveRange').on('change',function(){
-  $('#valveCycles').val($(this).val());
-});
-
-$('#valveCycles').on('change',function(){
-  $('#valveRange').val($(this).val());
-});
-
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function wayValve() {
-    n = $('#valveCycles').val();
-    for (let i = 1; i <= n; i++) {
-      try {
-        gcode = 'M42P36S255\nG4P500\nM42P36S0\nG4P500';
-        await sendToMachine(gcode);
-        console.log(gcode);
-        await delay(500);
-      } 
-      catch (error) {
-        console.error('Error in wayValve:', error);
-      }
-    };
-}
-
-$('#valvecontrol').on('click', function() {
-    wayValve();
-})

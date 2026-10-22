@@ -79,8 +79,6 @@ class DevelopmentView(FormView):
         OC_LAB.send(f'M203Z5')  
         OC_LAB.send(f'M42P49S255')
         OC_LAB.send(f'M42P36S255')
-        OC_LAB.send(f'G28E')
-        OC_LAB.send(f'G92E0')
         OC_LAB.send(f'G28YX')
         return render(request, 'development.html', {})
 
