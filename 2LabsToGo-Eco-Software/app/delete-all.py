@@ -4,10 +4,13 @@
 import os
 #import glob
 import glob
-# import the sqlite3 module
-#import sqlite3
 
-#delete 0001_initial.py in migrations of sampleapp, finecontrol, development, detection
+#delete 0001_initial.py in migrations of connection, sampleapp, finecontrol, development, detection
+if os.path.exists("./connection/migrations/0001_initial.py"):
+  os.remove("./connection/migrations/0001_initial.py")
+else:
+  print("The file does not exist")
+
 if os.path.exists("./sampleapp/migrations/0001_initial.py"):
   os.remove("./sampleapp/migrations/0001_initial.py")
 else:

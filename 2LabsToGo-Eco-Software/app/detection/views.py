@@ -68,47 +68,179 @@ class ImportCSV(View):
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-
 class Image_Process(View):
-    
+
     def get(self, request):
-            last_photo = Images_Db.objects.latest('id')
+        last_photo = (
+            Images_Db.objects
+            .exclude(image__endswith='default.jpg')
+            .order_by('-id')
+            .first()
+        )
+
+        if last_photo:
             photo_path = last_photo.image.url
             full_photo_url = request.build_absolute_uri(photo_path)
+
             context = {
                 'imagepath': full_photo_url,
-            }   
-            return render(request, 'Image_Process.html', context) 
+                'photo_id': last_photo.id,
+            }
+        else:
+            context = {
+                'imagepath': '/static/modules/Image_Process/default.jpg',
+                'photo_id': '',
+            }
+
+        return render(request, 'Image_Process.html', context)
         
     def post(self, request):
-        
-        direction = request.POST.get('direction')
-        photo_name = request.POST.get("current_photo_id")
 
-        if direction == 'next' :
-            current_photo = Images_Db.objects.get(image__contains=photo_name)
-            current_photo_id = int(current_photo.id)
-            next_photo_id = current_photo_id + 1
-            next_photo = Images_Db.objects.get(id=next_photo_id)
-            if next_photo:
-                
-                photo_path = next_photo.image.url
-                full_photo_url = request.build_absolute_uri(photo_path)
+        direction = request.POST.get('direction')
+        current_photo_id = request.POST.get('current_photo_id')
+
+        current_photo = Images_Db.objects.get(id=current_photo_id)
+
+        if direction == 'next':
+
+            photo = (
+                Images_Db.objects
+                .exclude(image__endswith='default.jpg')
+                .filter(id__gt=current_photo.id)
+                .order_by('id')
+                .first()
+            )
+
+            if photo is None:
+                photo = current_photo
 
         elif direction == 'pre':
-                current_photo = Images_Db.objects.get(image__contains=photo_name)
-                current_photo_id = int(current_photo.id)
-                previous_photo_id = current_photo_id - 1
-                previous_photo = Images_Db.objects.get(id=previous_photo_id)
-                if previous_photo:
-                    photo_path = previous_photo.image.url
-                    full_photo_url = request.build_absolute_uri(photo_path)
+
+            photo = (
+                Images_Db.objects
+                .exclude(image__endswith='default.jpg')
+                .filter(id__lt=current_photo.id)
+                .order_by('-id')
+                .first()
+            )
+
+            if photo is None:
+                photo = current_photo
+
         else:
-            last_photo = Images_Db.objects.latest('id')
-            photo_path = last_photo.image.url
-            full_photo_url = request.build_absolute_uri(photo_path)
+            photo = (
+                Images_Db.objects
+                .exclude(image__endswith='default.jpg')
+                .order_by('-id')
+                .first()
+            )
+
+        photo_path = photo.image.url
+        full_photo_url = request.build_absolute_uri(photo_path)
+
+        return JsonResponse({
+            'imagepath': full_photo_url,
+            'photo_id': photo.id
+        })
+    # def get(self, request):
+    #     last_photo = Images_Db.objects.latest('id')
+
+    #     photo_path = last_photo.image.url
+    #     full_photo_url = request.build_absolute_uri(photo_path)
+
+    #     context = {
+    #         'imagepath': full_photo_url,
+    #         'photo_id': last_photo.id,
+    #     }
+
+    #     return render(request, 'Image_Process.html', context)
+
+    # def post(self, request):
+
+    #     direction = request.POST.get('direction')
+    #     current_photo_id = request.POST.get('current_photo_id')
+
+    #     current_photo = Images_Db.objects.get(id=current_photo_id)
+
+    #     if direction == 'next':
+
+    #         next_photo = (
+    #             Images_Db.objects
+    #             .filter(id__gt=current_photo.id)
+    #             .order_by('id')
+    #             .first()
+    #         )
+
+    #         if next_photo:
+    #             photo = next_photo
+    #         else:
+    #             photo = current_photo
+
+    #     elif direction == 'pre':
+
+    #         previous_photo = (
+    #             Images_Db.objects
+    #             .filter(id__lt=current_photo.id)
+    #             .order_by('-id')
+    #             .first()
+    #         )
+
+    #         if previous_photo:
+    #             photo = previous_photo
+    #         else:
+    #             photo = current_photo
+
+    #     else:
+    #         photo = Images_Db.objects.latest('id')
+
+    #     photo_path = photo.image.url
+    #     full_photo_url = request.build_absolute_uri(photo_path)
+
+    #     return JsonResponse({
+    #         'imagepath': full_photo_url,
+    #         'photo_id': photo.id
+    #     })
+        
+# class Image_Process(View):
     
-        return JsonResponse({'imagepath':full_photo_url})
+#     def get(self, request):
+#             last_photo = Images_Db.objects.latest('id')
+#             photo_path = last_photo.image.url
+#             full_photo_url = request.build_absolute_uri(photo_path)
+#             context = {
+#                 'imagepath': full_photo_url,
+#             }   
+#             return render(request, 'Image_Process.html', context) 
+        
+#     def post(self, request):
+        
+#         direction = request.POST.get('direction')
+#         photo_name = request.POST.get("current_photo_id")
+
+#         if direction == 'next' :
+#             current_photo = Images_Db.objects.get(image__contains=photo_name)
+#             current_photo_id = int(current_photo.id)
+#             next_photo_id = current_photo_id + 1
+#             next_photo = Images_Db.objects.get(id=next_photo_id)
+#             if next_photo:
+                
+#                 photo_path = next_photo.image.url
+#                 full_photo_url = request.build_absolute_uri(photo_path)
+
+#         elif direction == 'pre':
+#                 current_photo = Images_Db.objects.get(image__contains=photo_name)
+#                 current_photo_id = int(current_photo.id)
+#                 previous_photo_id = current_photo_id - 1
+#                 previous_photo = Images_Db.objects.get(id=previous_photo_id)
+#                 if previous_photo:
+#                     photo_path = previous_photo.image.url
+#                     full_photo_url = request.build_absolute_uri(photo_path)
+#         else:
+#             last_photo = Images_Db.objects.latest('id')
+#             photo_path = last_photo.image.url
+#             full_photo_url = request.build_absolute_uri(photo_path)
+    
+#         return JsonResponse({'imagepath':full_photo_url})
         
 
             
@@ -142,6 +274,14 @@ class WhiteBalance(View):
  
 class DetectionView(FormView):
     def get(self, request):
+        """Manage the HTML view in detection"""
+        OC_LAB.send(f'M92Z400')
+        OC_LAB.send(f'M203Z40')   
+        OC_LAB.send(f'M42P49S0')
+        OC_LAB.send(f'M42P36S0')
+        OC_LAB.send(f'G28E')
+        OC_LAB.send(f'G92E0')
+        
         form = {}
         initial = basic_conf()
         imported_data = request.session.pop('imported_form_data', None)
@@ -217,7 +357,7 @@ class TakeImage(View):
                     return JsonResponse({'error': 'Invalid color values'}, status=400)
 
                 try:
-                    print("Starting photo shoot process...")
+                    print("Starting photo shoot process (2LabsToGo orange)...")
                     photo_shoot = PhotoShootManager(request)
                     photo_shoot.set_camera_configurations(color_dict)
                     photo_shoot.shoot()

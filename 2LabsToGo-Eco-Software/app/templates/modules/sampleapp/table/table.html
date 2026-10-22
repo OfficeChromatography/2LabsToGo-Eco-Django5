@@ -5,7 +5,7 @@
     
     <thead>
         <tr>
-            <th class="text-center">Band</th>
+            <th class="text-center">Track</th>
             <th class="text-center">Sample</th>
             <th class="text-center">Volume (uL)</th>
             <th class="text-center">Calculations</th>
@@ -21,8 +21,8 @@
                             placeholder="Name">
                     </div>
                 </form>
-                <!-- </br> -->
-                <!-- <div class="btn btn-primary btn-icon-split copybttn">
+                </br>
+                <div class="btn btn-primary btn-icon-split copybttn">
                     <span class="icon">
                         <i class="fas fa-copy"></i>
                     </span>
@@ -31,7 +31,7 @@
                     <span class="icon">
                         <i class="fas fa-paste"></i>
                     </span>
-                </div> -->
+                </div>
             </td>
             <td class="pt-3-half volume-cell">
                 <!--Fluid-->
@@ -63,13 +63,29 @@
                         <input name="viscosity" type="number" id="viscosityInput" class="form-control form-control-sm viscosity"
                             placeholder="viscosity [cSt]" value="1.0">
                     </div>
+                    
+                    <div class="form-group row">
+                        <div class="col" style="text-align: left;">
+                                <span>Rinsing Volume</span>
+                               <!--<label for="id_samplerinse" class="col-xl-3 col-lg-5 col-form-labelFactorInput" class="form- col-form-label-sm text-truncate">Sample rinsing</label>-->
+                              <input name="sampleFactor" type="number" step="0.1" value="0.7"  class="sampleFactor" style="width: 30%; margin: 5px;">
+                              <span>mL</span>
+                        </div>
+                    </div>
 
+
+<!--                    <div class = "sampleFactor" style="text-align: left;">
+                        <span>Sample Factor (%):</span>
+                        <input type="number" maxlength="3" value="100" name="sampleFactor" 
+                            style="width: 20%; margin: 5px;">
+                    </div> -->
+         
                     <div class = "sample" style="text-align: left;">
                         <span>Vial:</span>
                         <input class="i_sample" type="number" maxlength="1" value="1" name="i_sample" min="1" max="8"
                             onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                             oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                            style="width: 20%; margin: 15px;">
+                            style="width: 20%; margin: 5px;">
                     </div>
 
                     </div>
@@ -81,13 +97,17 @@
                         <td><small>Volume: </small></td>
                         <td><small class="estimated-volume"></small></td>
                     </tr>
+					<tr>
+                        <td><small>Passes: </small></td>
+                        <td><small class="times"></small></td>
+                    </tr>
+					<tr>
+                        <td><small>MinVol: </small></td>
+                        <td><small class="minimum-volume"></small></td>
+                    </tr>
                     <tr>
                         <td><small>DropVol: </small></td>
                         <td><small class="estimated-drop"></small></td>
-                    </tr>
-                    <tr>
-                        <td><small>MinVol: </small></td>
-                        <td><small class="minimum-volume"></small></td>
                     </tr>
                 </table>
             </td>
