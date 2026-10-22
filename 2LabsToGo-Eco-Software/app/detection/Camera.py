@@ -38,15 +38,20 @@ class Camera:
             if num_pict > 1:
                 self.picam2.set_controls({"AeEnable": False})
                 time.sleep(30)
-                print("metadata 1:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
+                exptime1 = metadata["ExposureTime"]
+                exptime = round((exptime1/1000/1000), 3)
+                print("Exposure Time:", exptime, "s")
+                print("metadata 1:", " ExposureTime ", metadata["ExposureTime"],"(µs)", " ColourGains ", metadata["ColourGains"], " AnalogueGain ", round(metadata["AnalogueGain"],3))
                 
             else:
-                print("metadata 1:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
+                exptime = metadata["ExposureTime"]
+                print("Exposure Time:", round(exptime/1000/1000, 5), "s")
+                print("metadata 1:", " ExposureTime ", metadata["ExposureTime"], "(µs)", " ColourGains ", metadata["ColourGains"], " AnalogueGain ", round(metadata["AnalogueGain"],3))
             self.picam2.capture_file(f'{name}{i}.{format}')
             request = self.picam2.capture_request()
             metadata = request.get_metadata()
             request.release()
-            print("metadata 2:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
+            #print("metadata 2:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
 
             os.path.exists(f'{name}{i}.{format}')
             photo_path.append(os.getcwd() + '/' + name + str(i) + '.' + format)
@@ -101,15 +106,19 @@ class Camera:
 
         if((property == 'brightness')):
             self.picam2.set_controls({"Brightness": value})
+            print("Brightness:", value)
 
         if((property == 'contrast')):
             self.picam2.set_controls({"Contrast": value})
+            print("Contrast:", value) 
 
         if((property == 'saturation')):
             self.picam2.set_controls({"Saturation": value})
+            print("Saturation:", value)
 
         if((property == 'sharpness')):
-            self.picam2.set_controls({"Sharpness": value})                
+            self.picam2.set_controls({"Sharpness": value})
+            print("Sharpness:", value)                
 
     def set_resolution(self):
         '''Sets the camera's resolution to 2028x1520.'''
@@ -151,6 +160,7 @@ class UvLed:
         '''Sends a command to turn the LED on or off to the OC_LAB class based
         on the pin and power arguments.'''
         OC_LAB.send_now(f'M42 P{self.pin} S{power}')
+        print("Pin", self.pin, ": S", power, "(Pin 5 = 265 nm, Pin 2 = 340 nm, Pin 13 = whiteT)")
 
 class VisibleLed:
     def __init__(self):
@@ -160,4 +170,4 @@ class VisibleLed:
         '''Sends a command to set the RGBW values of the LED to the OC_LAB class based
         on the red_power, green_power, blue_power, and white_power arguments.'''
         OC_LAB.send_now(f'G93R{red_power}G{green_power}B{blue_power}W{white_power}')
-    
+        print("RGBW LED: whiteR", white_power, ", red", red_power, ", green ", green_power, ", blue", blue_power) 

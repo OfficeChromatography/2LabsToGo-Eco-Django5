@@ -4,6 +4,7 @@ var colorSelected = [{name: "red", value: "0"},
                     {name: "blue", value: "0"}]
 
 let phantomImageID="";
+let currentOrder = "updated_at";
 
 window.onload = function(){
     ExposureFormsControl($('#id_auto_exposure').val())
@@ -62,6 +63,9 @@ function autoExposure(){
 $('#id_white_balance_auto_preset').on('change',function(e){
     AWBFormsControl(e.target.value)
 })
+
+
+
 function AWBFormsControl(value){
   if(value=='0'){
       $('#form_colour_gains').hide()
@@ -153,51 +157,40 @@ $('#shootbttn').on('click', function (e) {
    });
 });
 
+
+
+$("#orderby_btn").on("click", function () {
+    if (currentOrder === "updated_at") {
+        currentOrder = "created_at";
+        $(this).text("Created");
+    } else {
+        currentOrder = "updated_at";
+        $(this).text("Updated");
+    }
+    list_of_saved.loadList();
+});
+
 function shootMethodSuccess(data, textStatus, jqXHR){
     setData(data);
     list_of_saved.loadList();
 }
 function shootMethodError(jqXHR, textStatus, errorThrown){}
 
-//homming each axis
+//homming after capture image
 $('#hommingbttn').on('click', function (e) {
   e.preventDefault();
-  gcode = 'M92Z400';
-  sendToMachine(gcode);
-  gcode = 'M203Z40';
-  sendToMachine(gcode);
-  gcode = 'M42P49S0';
-  sendToMachine(gcode);
-  gcode = 'M42P36S0';
-  sendToMachine(gcode);
-  sendToMachine('M355 S1 P255')
-  gcode = 'G28Z\nG28Y\nG28X';
-  sendToMachine(gcode);
-  gcode = 'M355S1P50';  //case light on
+  gcode = 'M92Z400\nM203Z40\nM42P49S0\nM42P36S0\nM355S1P50\nG28Z\nG28Y\nG28X';
+  console.log(gcode);
   sendToMachine(gcode);
 });
 
 //put camera into position
 $('#cameraposbttn').on('click', function (e) {
-    e.preventDefault()
-    gcode = 'M92Z400' 
-    sendToMachine(gcode)
-    gcode = 'M203Z40'
-    sendToMachine(gcode)
-    gcode = 'M42P49S0'
-    sendToMachine(gcode)
-    gcode = 'M42P36S0'
-    sendToMachine(gcode)
-    sendToMachine('M355 S0 P255')
-    gcode = 'G1X90\nG28YZ\nG1Y158Z270F3000' //Y value depends on each system
-    sendToMachine(gcode)
-    gcode = 'M355S1P50';  //case light on
-    sendToMachine(gcode);
-    gcode = 'M355S0P50';  //case light off
-    sendToMachine(gcode);
-  })
-
-
+  e.preventDefault();
+  gcode = 'M92Z400\nM203Z40\nM42P49S0\nM42P36S0\nG0E0\nG28X\nG0X50F3000\nG28YZ\nG0Y156Z270F3000\nM355S1P50\nM355S0P50';  //G0Y156 to be set individually
+  console.log(gcode);
+  sendToMachine(gcode);
+});
 
 var list_of_saved = new listOfSaved("http://127.0.0.1:8000/capture/save/",
 "http://127.0.0.1:8000/capture/list",
@@ -355,7 +348,132 @@ function switchPicture(direction){
       updateImagename(name);
   }
   function getConfigMethodError(jqXHR, textStatus, errorThrown){console.log('error')}
+document.addEventListener("DOMContentLoaded", function() {
+  const input = document.getElementById("import_csv_file");
 
+  if (input) {
+    input.addEventListener("change", function(event) {
+      processCSV(event.target.files[0]);
+    });
+  }
+});
+
+function processCSV(file) {
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    const csvData = event.target.result;
+    const lines = csvData.trim().split("\n");
+    let data = {};
+
+    lines.forEach(function(line) {
+      if (!line.trim()) return;
+
+      let firstCommaIndex = line.indexOf(",");
+      if (firstCommaIndex === -1) return;
+
+      let key = line.substring(0, firstCommaIndex).trim();
+      let value = line.substring(firstCommaIndex + 1).trim();
+
+      data[key] = decodeURIComponent(value);
+    });
+
+    delete data.id;
+    delete data.pk;
+    delete data.selected_element_id;
+    delete data["selected-element-id"];
+
+    delete data.image_id;
+    delete data.images;
+    delete data.url;
+    delete data.id_list;
+
+    $('#selected-element-id').val('');
+    $('#new_filename').prop('readonly', false);
+    $("#list-load").find("a.active").removeClass("active");
+
+    loadDataIntoForm(data);
+    resetImportedImageToDefault();
+
+    $("#import_csv_file").val("");
+  };
+
+  reader.readAsText(file, "UTF-8");
+}
+
+function loadDataIntoForm(data) {
+  Object.keys(data).forEach(function(key) {
+    if (
+      key === "id" ||
+      key === "pk" ||
+      key === "selected_element_id" ||
+      key === "selected-element-id" ||
+      key === "image_id" ||
+      key === "images" ||
+      key === "url" ||
+      key === "id_list"
+    ) {
+      return;
+    }
+
+    if (key === "note") {
+      $('#notestextarea').val(data[key]);
+      return;
+    }
+
+    if (key === "red") {
+      colorSelected[0].value = data[key];
+      return;
+    }
+
+    if (key === "green") {
+      colorSelected[1].value = data[key];
+      return;
+    }
+
+    if (key === "blue") {
+      colorSelected[2].value = data[key];
+      return;
+    }
+
+    const input = document.querySelector(`[name="${key}"]`);
+
+    if (input) {
+      if (input.type === "checkbox") {
+        input.checked = data[key] === "True" || data[key] === "true" || data[key] === "on";
+      } else {
+        input.value = data[key];
+      }
+    } else {
+      console.warn("No input found for key:", key);
+    }
+  });
+
+  $('#picker').colpickSetColor({
+    r: colorSelected[0].value,
+    g: colorSelected[1].value,
+    b: colorSelected[2].value
+  });
+
+  ExposureFormsControl($('#id_auto_exposure').val());
+  AWBFormsControl($('#id_white_balance_auto_preset').val());
+}
+
+function resetImportedImageToDefault() {
+  const defaultSrc = $('#image_id').data('default-src') || $('#image_id').attr('data-default-src');
+
+  if (defaultSrc) {
+    $('#image_id').attr('src', defaultSrc);
+  }
+
+  $('#image_id').attr('alt', 'Image_per_default');
+  $('#image_id').attr('src-list', '');
+  $('#image_id').attr('alt-list', '');
+  $('#image_id').attr('position', '0');
+
+  window.phantomImageID = "";
+  updateImagename("");
+}
 $(document).ready(function() {
     list_of_saved.loadList();
  

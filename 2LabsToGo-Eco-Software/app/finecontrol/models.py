@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 SYRINGE_VOLUME = [('3', '2 ml'),
                 ('6', '5 ml'),
@@ -88,6 +89,8 @@ class Method_Db(models.Model):
                 blank=True,
                 )
     filename = models.CharField(null=True, max_length=120)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class Application_Db(models.Model):
     auth = models.ForeignKey(
