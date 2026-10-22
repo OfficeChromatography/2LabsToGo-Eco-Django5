@@ -92,23 +92,6 @@ class Table {
         }, this)
     }
 
-    // loadTable(data) {
-    //     if (data.length > this.numberOfRows) {
-    //         this.#addMultipleRows(data.length - this.numberOfRows);
-    //     } else if (data.length < this.numberOfRows) {
-    //         this.destructor();
-    //         this.#addMultipleRows(data.length);
-    //     }
-    //     data.forEach((rowData, index) => {
-    //         if (this.row[index]) {
-    //             this.row[index].loadDataInRow(rowData);
-    //         } else {
-    //             console.warn(`No row found for index ${index}`);
-    //         }
-    //     });
-        
-    // }
-
     loadTable(data){
     if (data.length > this.numberOfRows) {
         this.addEmptyRows(data.length - this.numberOfRows);
@@ -125,7 +108,6 @@ class Table {
         if (data != 0) {
             //p.innerText = "       Estimated time for application : " + data[0].total_time.toFixed(3) + " min"
         }
-
     }
 
     static #Row = class Row {
@@ -137,8 +119,6 @@ class Table {
             this.#setSolventOptions();
             this.calculationMethod = calculationMethod
             this.setCalculateMethod();
-
-
         }
 
         setCalculateMethod() {
@@ -154,6 +134,15 @@ class Table {
             return this.#sanityUndefined(value)
         }
 
+        setTimes(value) {
+            this.row.find('.times').text(value.toFixed(1))
+        }
+
+        getTimes() {
+            let value = this.row.find('.times').text()
+            return this.#sanityUndefined(value)
+        }
+
         setEstimatedDropVolume(value) {
             this.row.find('.estimated-drop').text(value.toFixed(3))
         }
@@ -162,7 +151,6 @@ class Table {
             return this.#sanityUndefined(value)
         }
 
-
         setMinimumVolume(value) {
             this.row.find('.minimum-volume').text(value.toFixed(3))
         }
@@ -170,8 +158,6 @@ class Table {
             let value = this.row.find('.minimum-volume').text()
             return this.#sanityUndefined(value)
         }
-
-
 
         setTotalvolume(value) {
             this.row.find('.total-volume').text(value.toFixed(3))
@@ -211,8 +197,6 @@ class Table {
             return this.#sanityUndefined(value)
         }
 
-        
-
         setVolumeValue(value) {
             this.row.find('.volume').val(value)
         }
@@ -244,8 +228,6 @@ class Table {
             let value = this.row.find('.density').text()
             return this.#sanityUndefined(value)
         }
-
-
 
         #setSolventOptions() {
             /**
@@ -292,8 +274,8 @@ class Table {
                 "viscosity": this.getViscosity(),
                 "estimated_volume": this.getEstimatedVolume(),
                 "estimated_drop_volume": this.getEstimatedDropVolume(),
-                "minimum_volume": this.getMinimumVolume()
-
+                "minimum_volume": this.getMinimumVolume(),
+				"times": this.getTimes()
             }
             return data
         }

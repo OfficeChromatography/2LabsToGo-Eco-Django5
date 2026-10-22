@@ -36,6 +36,7 @@ class BandsComponents_Db(models.Model):
     sample = models.DecimalField(decimal_places=0, max_digits=1, null=True, blank=True)
     density = models.DecimalField(decimal_places=2, max_digits=6, null=True, blank=True)
     viscosity = models.DecimalField(decimal_places=2, max_digits=6, null=True, blank=True)
+    sample_factor = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
     
 
 class BandSettings_Db(models.Model):
@@ -45,7 +46,7 @@ class BandSettings_Db(models.Model):
                                                                  on_delete=models.CASCADE,
                                                                  blank=True)
     main_property = models.DecimalField(null=True,decimal_places=0, max_digits=6)
-    value = models.DecimalField(null=True, decimal_places=0, max_digits=3)
+    value = models.DecimalField(null=True, decimal_places=1, max_digits=3)
     height = models.DecimalField(null=True, decimal_places=2, max_digits=5)
     gap = models.DecimalField(null=True, decimal_places=2, max_digits=5)
     waitTime = models.DecimalField(null=True, decimal_places=2, max_digits=5)
@@ -56,7 +57,7 @@ class MovementSettings_Db(models.Model):
                                                                  null=True,
                                                                  on_delete=models.CASCADE,
                                                                  blank=True)
-    motor_speed = models.DecimalField(null=True, decimal_places=0, max_digits=5)
+    motor_speed = models.DecimalField(null=True, decimal_places=0, max_digits=2)
     delta_x = models.DecimalField(null=True, decimal_places=2, max_digits=5)
     delta_y = models.DecimalField(null=True, decimal_places=2, max_digits=5)
 
@@ -66,10 +67,12 @@ class PressureSettings_Db(models.Model):
                                                                  null=True,
                                                                  on_delete=models.CASCADE,
                                                                  blank=True)
-    pressure = models.DecimalField(null=True, decimal_places=0, max_digits=3)
+    pressure = models.DecimalField(null=True, decimal_places=0, max_digits=2)
     frequency = models.DecimalField(null=True, decimal_places=0, max_digits=4)
     temperature = models.DecimalField(null=True, decimal_places=0, max_digits=3, blank=True)
     nozzlediameter = models.CharField(max_length=120, default='0.05')
     rinsingPeriod = models.DecimalField(null=True, decimal_places=0, max_digits=6)
     rinsingSolvent = models.CharField(null=True, max_length=120, blank=True)
-
+    rinsingFactor = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
+    vialtype = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
+    
