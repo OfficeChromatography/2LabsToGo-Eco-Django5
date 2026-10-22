@@ -19,5 +19,5 @@ $("#warmup-form").on('keydown',function(event){
     })
 
 $('#warmupAsModal').on('shown.bs.modal', function (e) {
-    sendToMachine('G0X129');
+    sendToMachine('G0X1');
 })

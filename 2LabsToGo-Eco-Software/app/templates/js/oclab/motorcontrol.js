@@ -10,10 +10,11 @@ function isConnectedEndpointRequest(){
     url:    monitorendpoint,
     success: isConnectedEndpointSucess,
     error: isConnectedEndpointError,
-  });
+  })
 }
 function isConnectedEndpointSucess(data, textStatus, jqXHR){
   if(data['connected']==true){
+    
     monitorEndpointRequest();
   }
   else{

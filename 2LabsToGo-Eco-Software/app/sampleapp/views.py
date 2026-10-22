@@ -23,8 +23,6 @@ class SampleView(FormView):
         OC_LAB.send(f'M203Z40')   
         OC_LAB.send(f'M42P49S0')
         OC_LAB.send(f'M42P36S0')
-        OC_LAB.send(f'G28E')
-        OC_LAB.send(f'G92E0')
         OC_LAB.send(f'G28ZYX')        
         return render(request,'sample.html',{})
 
@@ -35,8 +33,6 @@ class SyringeView(FormView):
         OC_LAB.send(f'M203Z5')  
         OC_LAB.send(f'M42P49S255')
         OC_LAB.send(f'M42P36S255')
-        OC_LAB.send(f'G28E')
-        OC_LAB.send(f'G92E0')
         OC_LAB.send(f'G28YX')
         return render(request,'samplesp.html',{})
 
@@ -157,7 +153,6 @@ class SampleAppPlay(View):
         gcode = calculate(forms_data)
 
         # Printrun
-        #print("gcode",gcode)
         OC_LAB.print_from_list(gcode)
         
         return JsonResponse({'error':'f.errors'})

@@ -9,13 +9,13 @@
                 </button>
             </div>
             <div class="modal-body">
-            <p>Automatic Rinsing</p>
+            <p>Automatic rinsing</p>
                   <form id='rinse-form' method="post"> {% csrf_token %}
                   
                     <div class="input-group">
                       <p>Frequency</p>
                       <label for="id_rinse_frequency" class="col-xl-2 col-form-label col-form-label-sm text-truncate"></label>
-                      <input type="number" name="rinse_frequency" class='form-control px-1' value="1" step="100" id='id_rinse_frequency'/>
+                      <input type="number" name="rinse_frequency" class='form-control px-1' value="2" step="100" id='id_rinse_frequency'/>
                       <div class="input-group-append">
                           <span class="input-group-text">Hz</span>
                       </div>

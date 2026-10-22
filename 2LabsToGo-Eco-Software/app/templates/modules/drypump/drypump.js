@@ -1,5 +1,5 @@
 async function sendToMachine(value) {
-    const data = {'gcode': value};
+    var data = {'gcode': value};
     console.log(data);
     return new Promise(function(resolve, reject) {
         $.ajax({
@@ -11,40 +11,39 @@ async function sendToMachine(value) {
                 resolve(data);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.error("Error:", errorThrown);
+                console.log(errorThrown);
                 reject(errorThrown);
             }
         });
-    })
+    });
 }
 
-$('#pumpRange').on('change',function(){
-  $('#pumpCycles').val($(this).val());
-});
-
-$('#pumpCycles').on('change',function(){
-  $('#pumpRange').val($(this).val());
-});
-
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function pump() {
-    n = $('#pumpCycles').val();
-    for (let i = 1; i <= n; i++) {
+async function controlPump(cycles) {
+    for (let i = 0; i < cycles; i++) {
         try {
-            gcode = 'G50\nG4P500\nG51\nG4P500';
-            await sendToMachine(gcode);
-            console.log(gcode);
-            await delay(500);
+            await sendToMachine('M42 P40 S255'); // Pumpe ansaugen
+            await sendToMachine('M400');
+            await sendToMachine('M42 P40 S0');   // Pumpe pumpen
+            await sendToMachine('M400');
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 1 Sekunde warten (falls nötig)
+        } catch (error) {
+            console.error('Error in controlPump:', error);
         }
-        catch (error) {
-            console.error('Error in drypump:', error);
-        }
-    };
+    }
 }
 
-$('#pumpcontrol').on('click', function() {
-    pump();
+// Event-Listener für das Formular
+document.getElementById('pumpControlForm').addEventListener('submit', function(event){
+    event.preventDefault();
+    var cycles = document.getElementById('pumpCycles').value;  // Wert aus dem Nummernfeld holen
+    controlPump(parseInt(cycles, 10)); // Parse cycles to integer
+});
+
+// Synchronisation zwischen Range-Input und Number-Input
+document.getElementById('pumpRange').addEventListener('input', function() {
+    document.getElementById('pumpCycles').value = this.value;
+});
+
+document.getElementById('pumpCycles').addEventListener('input', function() {
+    document.getElementById('pumpRange').value = this.value;
 });

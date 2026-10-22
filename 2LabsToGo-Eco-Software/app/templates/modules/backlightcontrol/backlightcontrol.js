@@ -39,5 +39,5 @@ document.addEventListener("DOMContentLoaded", function() {
         $('#lightoff').attr('disabled', true);
       }
     });
-});
+  });
   

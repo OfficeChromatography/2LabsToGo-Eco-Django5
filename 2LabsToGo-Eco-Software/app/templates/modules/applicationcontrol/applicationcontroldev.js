@@ -36,17 +36,22 @@ class ApplicationControlDev {
     _handleStopClick() {
       this.$stopButton.on("click", () => {
         this._stop();
-        sendToMachine('M92Z400\nM203Z40\nM42P49S0\nM42P36S0\nG28YX');
+        sendToMachine('M92Z400')
+        sendToMachine('M203Z40')   
+        sendToMachine('M42P49S0')
+        sendToMachine('M42P36S0')
+        sendToMachine('G28YX');
       });
     }
   
     _start() {
+    
      $.post(this.play_url, this.getData())
         .done(() => {
           this.state = "started";
           this._changeState();
           this.$startButton.text("Start");
-     });
+        });
     }
     
     _stop() {
@@ -55,6 +60,7 @@ class ApplicationControlDev {
           this.state = "stopped";
           this.$startButton.text("Start");
           this._changeState();
-      });
+        });
     }
   }
+ 
